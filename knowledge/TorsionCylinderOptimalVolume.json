@@ -1,0 +1,48 @@
+{
+  "block": "TorsionCylinderOptimalVolume",
+  "status": "candidate",
+  "source_evidence": "Section 4.1, Eq. (10): V_opt = [(n_f l_f)/sigma_T - (-n_f l_f)/sigma_C](2 pi r) = (sqrt(2)M/(4 pi r^2))(sqrt(2)H)[1/sigma_T + 1/sigma_C](2 pi r) = (MH/r)[1/sigma_T + 1/sigma_C]. 'A moment pair causes a pure-shear condition on the cylinder surface... principal stress lines oriented at +-pi/4.' Fiber force n_f = sqrt(2)M/(4 pi r^2), length l_f = sqrt(2)H.",
+  "purpose": "Provides the analytical closed-form optimal (minimum) volume of a cylindrical truss transferring an end torsion moment, used to verify GRAND3 numerical results.",
+  "computes": [
+    "OptimalVolume"
+  ],
+  "requires": [
+    "AppliedMoment",
+    "CylinderHeight",
+    "CylinderRadius",
+    "TensionStressLimit",
+    "CompressionStressLimit"
+  ],
+  "assumptions": [
+    "Moment pair causes a pure-shear condition on the cylinder surface",
+    "Members follow the principal stress lines oriented at +-pi/4",
+    "Fiber tension force n_f = sqrt(2) M / (4 pi r^2), compression -n_f, fiber length l_f = sqrt(2) H",
+    "Domain fully supported on the bottom end cap; moment distributed over the outer ring of the upper end cap"
+  ],
+  "formula_or_algorithm": "V_opt = (M H / r) [1/sigma_T + 1/sigma_C]. Derived from V_opt = [(n_f l_f)/sigma_T - (-n_f l_f)/sigma_C](2 pi r) with n_f = sqrt(2)M/(4 pi r^2) and l_f = sqrt(2)H. For H=11, r=3, M=5: V_opt = 36.6667.",
+  "validation_opportunities": [
+    "analytical solution (this closed form is the reference)",
+    "benchmark: GRAND3 converges to V_opt = 36.6667 (Table 2, Fig. 6)",
+    "dimensional check",
+    "convergence test under mesh refinement"
+  ],
+  "possible_implementations": [
+    "MATLAB",
+    "Python",
+    "C++",
+    "Fortran",
+    "other"
+  ],
+  "reuse_risk": {
+    "level": "low",
+    "explanation": "Simple explicit algebraic formula from a well-documented derivation; trivially reusable as a benchmark."
+  },
+  "missing_information": [],
+  "candidate_relations": [
+    "TorsionCylinderOptimalVolume computes OptimalVolume",
+    "TorsionCylinderOptimalVolume requires AppliedMoment",
+    "TorsionCylinderOptimalVolume requires CylinderRadius",
+    "TorsionCylinderOptimalVolume assumes PureShearCondition",
+    "TorsionCylinderOptimalVolume validates LinearProgrammingTrussOptimization"
+  ]
+}

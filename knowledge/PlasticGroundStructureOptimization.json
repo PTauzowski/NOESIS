@@ -1,0 +1,62 @@
+{
+  "block": "PlasticGroundStructureOptimization",
+  "status": "candidate",
+  "source_evidence": "Eq. (1): min_a V = l^T a  s.t. B^T n = f, -sigma_C a_i <= n_i <= sigma_T a_i, i=1..N_b. 'The minimum volume truss that satisfies the force equilibrium equations (plastic analysis)'.",
+  "purpose": "Finds the minimum-volume truss (member cross-sectional areas) that satisfies nodal force equilibrium subject to member stress limits in tension and compression, over a redundant ground structure.",
+  "computes": [
+    "OptimalMemberAreas",
+    "MinimumStructuralVolume",
+    "MemberInternalForces",
+    "OptimalTopology"
+  ],
+  "requires": [
+    "MemberLengthVector",
+    "NodalEquilibriumMatrix",
+    "NodalLoadVector",
+    "TensionStressLimit",
+    "CompressionStressLimit",
+    "GroundStructureMembers"
+  ],
+  "assumptions": [
+    "Stable truss with no mechanisms",
+    "Supports prevent rigid body motions",
+    "Single static load case",
+    "Constant (design independent) forces",
+    "Small deformations",
+    "Plastic analysis: only force equilibrium enforced, compatibility and stress-strain relations not included",
+    "Redundancy N_b - N_dof must be greater than zero"
+  ],
+  "formula_or_algorithm": "min over a of V = l^T a subject to B^T n = f and -sigma_C a_i <= n_i <= sigma_T a_i for i = 1..N_b. B^T is the N_dof x N_b nodal equilibrium matrix built from member directional cosines; n is the vector of member axial forces. A member is absent (removed) if a_i = 0. This is a nonlinear program.",
+  "validation_opportunities": [
+    "analytical solution (Michell closed-form optimal structures)",
+    "benchmark against known optimal volumes (torsion cylinder, cone, ball)",
+    "dimensional check on V = length * area",
+    "comparison with 2D GRAND reference implementation",
+    "convergence test under mesh refinement"
+  ],
+  "possible_implementations": [
+    "MATLAB",
+    "Python",
+    "C++",
+    "other (any linear/nonlinear programming environment)"
+  ],
+  "reuse_risk": {
+    "level": "medium",
+    "explanation": "Formulation is general and well-defined, but correct assembly of B^T from geometry and satisfying redundancy/stability conditions requires care; it is a nonlinear program, less efficient to solve than its LP reformulation."
+  },
+  "missing_information": [
+    "Concrete assembly procedure for B^T from directional cosines and connectivity",
+    "Numerical solver settings and tolerances",
+    "Handling of near-zero areas for member removal"
+  ],
+  "candidate_relations": [
+    "PlasticGroundStructureOptimization computes OptimalMemberAreas",
+    "PlasticGroundStructureOptimization computes MinimumStructuralVolume",
+    "PlasticGroundStructureOptimization requires NodalEquilibriumMatrix",
+    "PlasticGroundStructureOptimization requires MemberLengthVector",
+    "PlasticGroundStructureOptimization requires NodalLoadVector",
+    "PlasticGroundStructureOptimization assumes SmallDeformations",
+    "PlasticGroundStructureOptimization assumes SingleStaticLoadCase",
+    "LinearProgrammingTrussOptimization reformulates PlasticGroundStructureOptimization"
+  ]
+}

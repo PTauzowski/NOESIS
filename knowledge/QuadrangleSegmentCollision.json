@@ -1,0 +1,48 @@
+{
+  "block": "QuadrangleSegmentCollision",
+  "status": "candidate",
+  "source_evidence": "Appendix B.3, Eq. (20)-(23): quadrangle split into two triangles; n = AB1 x AB2; t_w = (PA.n)/(d.n); triple products V_a=[d PC PB1]=e1.PB1, V_b=[d PC PB2]=e1.PB2, V2=-[d PC PA]=-e1.PA with e1=d x PC; choose correct triangle by sign(V_a)/sign(V_b) vs sign(V2), then V3=e2.PA; collides iff 0<=t_w<=1 and sign(V2)=sign(V3).",
+  "purpose": "Tests whether a truss member (segment) intersects a flat quadrangle restriction primitive by splitting it into two triangles and reusing the triangle test, with an early-out to save computation.",
+  "computes": [
+    "QuadrangleSegmentIntersectionFlag",
+    "PlaneIntersectionPoint"
+  ],
+  "requires": [
+    "QuadrangleVertices",
+    "SegmentEndpointP",
+    "SegmentEndpointQ"
+  ],
+  "assumptions": [
+    "Quadrangle is flat and all 4 points lie (approximately) in the same plane",
+    "Quadrangle is an extension of the triangle primitive case",
+    "One of the two triangles can be chosen early to save computation"
+  ],
+  "formula_or_algorithm": "d = Q - P. Plane normal n = AB1 x AB2. t_w = (PA . n)/(d . n). With e1 = d x PC compute V_a = e1.PB1, V_b = e1.PB2, V2 = -e1.PA. Pick the correct sub-triangle: e2 = d x PB1 if sign(V_a)=sign(V2), else e2 = d x PB2 if sign(V_b)=sign(V2); then V3 = e2 . PA. The segment collides with quadrangle AB1CB2 iff 0 <= t_w <= 1 AND sign(V2) = sign(V3).",
+  "validation_opportunities": [
+    "unit tests over both sub-triangles and the shared diagonal",
+    "consistency with two independent full triangle tests",
+    "planarity assumption sensitivity",
+    "degenerate d.n = 0 case"
+  ],
+  "possible_implementations": [
+    "MATLAB",
+    "C++",
+    "Python",
+    "other"
+  ],
+  "reuse_risk": {
+    "level": "medium",
+    "explanation": "Depends on the flat/coplanar assumption for its 4 vertices; the early-triangle-selection sign logic is easy to implement incorrectly."
+  },
+  "missing_information": [
+    "Behavior when the 4 points are not exactly coplanar",
+    "Sign-tie handling on the shared diagonal"
+  ],
+  "candidate_relations": [
+    "QuadrangleSegmentCollision computes QuadrangleSegmentIntersectionFlag",
+    "QuadrangleSegmentCollision requires QuadrangleVertices",
+    "QuadrangleSegmentCollision extends TriangleSegmentCollision",
+    "SurfaceCollision uses QuadrangleSegmentCollision",
+    "RestrictionZoneCheck uses QuadrangleSegmentCollision"
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "block": "DiscSegmentCollision",
+  "status": "candidate",
+  "source_evidence": "Appendix B.5, Eq. (28)-(30): disc centered at A, normal n = B - A; v = P - A; intersection with disc plane t_w = -(v.n)/(d.n); AW = W - A = v - (v.n/d.n)d; collides iff AW.AW = (v - (v.n/d.n)d).(v - (v.n/d.n)d) <= r^2 with 0 <= t_w <= 1.",
+  "purpose": "Tests whether a truss member (segment) intersects a flat circular disc restriction primitive by intersecting the segment with the disc plane and checking the distance from the disc center.",
+  "computes": [
+    "DiscSegmentIntersectionFlag",
+    "PlaneIntersectionPoint"
+  ],
+  "requires": [
+    "DiscCenterA",
+    "DiscNormalPointB",
+    "DiscRadius",
+    "SegmentEndpointP",
+    "SegmentEndpointQ"
+  ],
+  "assumptions": [
+    "Disc is flat, centered at A with normal n = B - A pointing toward point B",
+    "Segment parameterized as X = P + td, 0 <= t <= 1",
+    "Disc developed specifically for GRAND3"
+  ],
+  "formula_or_algorithm": "d = Q - P, v = P - A, n = B - A. Plane intersection: t_w = -(v.n)/(d.n); W = P + t_w d. AW = W - A = v - (v.n/d.n) d. The segment collides with the disc iff AW.AW <= r^2 AND 0 <= t_w <= 1.",
+  "validation_opportunities": [
+    "unit tests: through disc interior, outside radius, missing plane, parallel to plane",
+    "distance-to-center check",
+    "degenerate d.n = 0 case",
+    "benchmark on diamond problem (disc discontinuity restriction)"
+  ],
+  "possible_implementations": [
+    "MATLAB",
+    "C++",
+    "Python",
+    "other"
+  ],
+  "reuse_risk": {
+    "level": "low",
+    "explanation": "Straightforward plane-intersection plus radius test; only care for the parallel-to-plane degeneracy."
+  },
+  "missing_information": [
+    "Handling of d.n = 0 (segment parallel to disc plane)"
+  ],
+  "candidate_relations": [
+    "DiscSegmentCollision computes DiscSegmentIntersectionFlag",
+    "DiscSegmentCollision requires DiscCenterA",
+    "DiscSegmentCollision requires DiscRadius",
+    "RodSegmentCollision uses DiscSegmentCollision",
+    "RestrictionZoneCheck uses DiscSegmentCollision"
+  ]
+}

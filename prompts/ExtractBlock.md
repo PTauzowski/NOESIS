@@ -86,6 +86,9 @@ Use simple triples:
 
 - <subject> <predicate> <object>
 
+## Output
+write blocks in JSON format in knowledge/ folder
+
 Examples:
 - CantileverTipDeflection computes TipDisplacement
 - CantileverTipDeflection requires YoungModulus

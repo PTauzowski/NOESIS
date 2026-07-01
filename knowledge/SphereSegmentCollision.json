@@ -1,0 +1,48 @@
+{
+  "block": "SphereSegmentCollision",
+  "status": "candidate",
+  "source_evidence": "Appendix B.4, Eq. (24)-(27): d=Q-P, v=C-P; criteria: (24) P inside sphere v.v<=r^2; (25) Q inside (v-d).(v-d)<=r^2; closest point w=(v.d/d.d)d; (27) inside sphere (v - (v.d/d.d)d).(v - (v.d/d.d)d) <= r^2 with 0 <= w.d <= d.d.",
+  "purpose": "Tests whether a truss member (segment) intersects a sphere restriction primitive by checking if either endpoint is inside, or the closest point on the segment to the sphere center is inside.",
+  "computes": [
+    "SphereSegmentIntersectionFlag",
+    "ClosestPointOnSegment"
+  ],
+  "requires": [
+    "SphereCenter",
+    "SphereRadius",
+    "SegmentEndpointP",
+    "SegmentEndpointQ"
+  ],
+  "assumptions": [
+    "Segment parameterized as X = P + td, 0 <= t <= 1",
+    "Collision if any of three criteria met: P inside, Q inside, or closest point between P and Q and inside",
+    "Sphere developed specifically for GRAND3"
+  ],
+  "formula_or_algorithm": "d = Q - P, v = C - P. Criterion 1: v.v <= r^2 (P inside). Criterion 2: (v-d).(v-d) = v.v - 2 v.d + d.d <= r^2 (Q inside). Criterion 3: closest point w = (v.d / d.d) d; it lies inside the sphere if (v - w).(v - w) <= r^2, and lies within the segment iff 0 <= w.d <= d.d (equivalently 0 <= t <= 1). Collision if any criterion holds.",
+  "validation_opportunities": [
+    "unit tests: endpoint inside, tangent, chord through sphere, segment entirely outside",
+    "closest-point clamping check (0<=t<=1)",
+    "analytical distance-to-center verification",
+    "benchmark on torsion-ball hollow-sphere restriction"
+  ],
+  "possible_implementations": [
+    "MATLAB",
+    "C++",
+    "Python",
+    "other"
+  ],
+  "reuse_risk": {
+    "level": "low",
+    "explanation": "Standard segment-sphere test with explicit closed-form conditions; robust and cheap."
+  },
+  "missing_information": [
+    "Handling of zero-length segment (d.d = 0)"
+  ],
+  "candidate_relations": [
+    "SphereSegmentCollision computes SphereSegmentIntersectionFlag",
+    "SphereSegmentCollision requires SphereCenter",
+    "SphereSegmentCollision requires SphereRadius",
+    "SphereSegmentCollision requires SegmentEndpointP",
+    "RestrictionZoneCheck uses SphereSegmentCollision"
+  ]
+}

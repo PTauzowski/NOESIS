@@ -1,0 +1,47 @@
+{
+  "block": "BoxSegmentCollision",
+  "status": "candidate",
+  "source_evidence": "Appendix B.1, Eq. (15)-(16): box defined by A_min, A_max; segment PQ with d = Q-P, X = P+td, 0<=t<=1. Sub-segment clipped by the 6 planes; t1 = (A_min.e1 - P.e1)/(d.e1), t2 = (A_max.e1 - P.e1)/(d.e1); if t1>t2 swap; t_min = max(t_min,t1), t_max = min(t_max,t2). 'The segment collides with the box if t_min <= t_max after all clipping.'",
+  "purpose": "Tests whether a truss member (segment) intersects an axis-aligned box restriction primitive using a slab-clipping (Liang-Barsky style) algorithm.",
+  "computes": [
+    "BoxSegmentIntersectionFlag"
+  ],
+  "requires": [
+    "BoxMinVertex",
+    "BoxMaxVertex",
+    "SegmentEndpointP",
+    "SegmentEndpointQ"
+  ],
+  "assumptions": [
+    "Box is axis-aligned, defined by extreme vertices A_min and A_max",
+    "Segment parameterized as X = P + td, 0 <= t <= 1",
+    "Initial t_min = 0, t_max = 1 positioning P' and Q' at P and Q",
+    "Procedure also handles the accidental case where A_min and A_max are reversed"
+  ],
+  "formula_or_algorithm": "d = Q - P. For each axis unit vector e_k (x,y,z): t1 = (A_min.e_k - P.e_k)/(d.e_k), t2 = (A_max.e_k - P.e_k)/(d.e_k); if t1 > t2 swap; t_min = max(t_min, t1); t_max = min(t_max, t2). After clipping on all three planes the sub-segment (hence the segment) collides with the box iff t_min <= t_max.",
+  "validation_opportunities": [
+    "unit tests: segment inside, outside, grazing, and passing through the box",
+    "degenerate axis-parallel segment handling (d.e_k = 0)",
+    "reversed A_min/A_max case",
+    "benchmark on crane example (box restriction zones)"
+  ],
+  "possible_implementations": [
+    "MATLAB",
+    "C++",
+    "Python",
+    "other"
+  ],
+  "reuse_risk": {
+    "level": "low",
+    "explanation": "Well-known slab-clipping ray/box test with explicit equations; only care needed for division when d is parallel to a plane."
+  },
+  "missing_information": [
+    "Explicit handling when d.e_k = 0 (segment parallel to a slab)"
+  ],
+  "candidate_relations": [
+    "BoxSegmentCollision computes BoxSegmentIntersectionFlag",
+    "BoxSegmentCollision requires SegmentEndpointP",
+    "BoxSegmentCollision requires BoxMinVertex",
+    "RestrictionZoneCheck uses BoxSegmentCollision"
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "block": "TriangleSegmentCollision",
+  "status": "candidate",
+  "source_evidence": "Appendix B.2, Eq. (17)-(19): n = AB x AC; t_w = (PA.n)/(d.n); W = P + t_w d; triple products V1 = [d PC PB], V2 = [d PA PC], V3 = [d PB PA]; 'segment PQ intersects triangle ABC iff 0 <= t_w <= 1 and sign(V1)=sign(V2)=sign(V3).'",
+  "purpose": "Tests whether a truss member (segment) intersects a flat triangular restriction primitive, by intersecting the segment with the triangle's plane and using signed triple products to check the point is inside the triangle.",
+  "computes": [
+    "TriangleSegmentIntersectionFlag",
+    "PlaneIntersectionPoint"
+  ],
+  "requires": [
+    "TriangleVerticesABC",
+    "SegmentEndpointP",
+    "SegmentEndpointQ"
+  ],
+  "assumptions": [
+    "Triangle is flat, defined by points A, B, C",
+    "Point W is inside the triangle if it is on the same side of all edges (works for clockwise or counterclockwise orientation)",
+    "Segment parameterized as X = P + td, 0 <= t <= 1"
+  ],
+  "formula_or_algorithm": "d = Q - P. Plane normal n = AB x AC. Intersection parameter t_w = (PA . n)/(d . n); W = P + t_w d. Triple products V1 = [d, PC, PB], V2 = [d, PA, PC], V3 = [d, PB, PA]. The segment intersects triangle ABC iff 0 <= t_w <= 1 AND sign(V1) = sign(V2) = sign(V3).",
+  "validation_opportunities": [
+    "unit tests: segment through interior, through an edge/vertex, parallel to plane, missing the triangle",
+    "orientation independence check (CW and CCW triangles)",
+    "degenerate case d.n = 0 (segment parallel to plane)",
+    "cross-check against direct barycentric containment"
+  ],
+  "possible_implementations": [
+    "MATLAB",
+    "C++",
+    "Python",
+    "other"
+  ],
+  "reuse_risk": {
+    "level": "low",
+    "explanation": "Standard segment-triangle intersection via triple products; robust apart from the parallel (d.n=0) degeneracy."
+  },
+  "missing_information": [
+    "Handling of the d.n = 0 (segment coplanar/parallel) case",
+    "Tie-breaking when a triple product is exactly zero (on an edge)"
+  ],
+  "candidate_relations": [
+    "TriangleSegmentCollision computes TriangleSegmentIntersectionFlag",
+    "TriangleSegmentCollision requires TriangleVerticesABC",
+    "TriangleSegmentCollision requires SegmentEndpointP",
+    "QuadrangleSegmentCollision extends TriangleSegmentCollision",
+    "SurfaceCollision uses TriangleSegmentCollision",
+    "RestrictionZoneCheck uses TriangleSegmentCollision"
+  ]
+}

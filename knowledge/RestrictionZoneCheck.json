@@ -1,0 +1,54 @@
+{
+  "block": "RestrictionZoneCheck",
+  "status": "candidate",
+  "source_evidence": "Section 3.4: 'the user defines restriction zones (i.e. hitboxes): geometric entities that no bar should intersect.' Primitives: box, cylinder, disc, quadrangle (flat), rod (finite cylinder), sphere, triangle (flat), surface. 'all bars originating from such node will be flagged for removal during the restriction zone check.' A setback tol is advised.",
+  "purpose": "Removes candidate bars that intersect user-defined restriction primitives (holes, concavities, barriers), so the ground structure lays no members in forbidden regions of the domain.",
+  "computes": [
+    "BarRemovalFlags",
+    "AcceptedGroundStructureMembers"
+  ],
+  "requires": [
+    "CandidateBars",
+    "RestrictionPrimitives",
+    "SetbackTolerance",
+    "NodeCoordinates"
+  ],
+  "assumptions": [
+    "Nodes in the base mesh must not intersect the restriction zones nor their boundary; otherwise all bars from such a node are flagged for removal",
+    "A small setback margin tol (relative to problem scale) keeps concave-boundary nodes clear of the restriction primitive",
+    "Restriction zones are typically a subset of the primitives used to construct the domain",
+    "Primitives may be combined to form complicated regions/boundaries"
+  ],
+  "formula_or_algorithm": "After ground structure generation, for each candidate bar (segment) test intersection against each restriction primitive using the segment-vs-primitive collision tests (Appendix B: box, triangle, quadrangle, sphere, disc, cylinder, rod, surface). If a bar intersects any primitive it is removed. Apply after or alongside the collinearity check; return the list of accepted bars (only p<q reported).",
+  "validation_opportunities": [
+    "unit test per primitive with known intersecting/non-intersecting segments",
+    "benchmark on diamond (disc restriction), cup (rod restriction), crane (box restriction), Lotte tower (surface restriction) examples",
+    "geometric/GUI live-testing (Fig. 34)",
+    "setback sensitivity check"
+  ],
+  "possible_implementations": [
+    "MATLAB",
+    "C++ (game/collision libraries)",
+    "Python",
+    "other"
+  ],
+  "reuse_risk": {
+    "level": "medium",
+    "explanation": "Robust in principle but depends on correct, numerically stable collision primitives and appropriate setback tol; boundary/edge cases and floating-point precision can cause missed or spurious removals."
+  },
+  "missing_information": [
+    "Guidance for choosing tol per problem scale",
+    "Order of application relative to collinearity check in code",
+    "How combined primitives are logically unioned/intersected"
+  ],
+  "candidate_relations": [
+    "RestrictionZoneCheck computes BarRemovalFlags",
+    "RestrictionZoneCheck requires RestrictionPrimitives",
+    "RestrictionZoneCheck requires SetbackTolerance",
+    "RestrictionZoneCheck uses BoxSegmentCollision",
+    "RestrictionZoneCheck uses SphereSegmentCollision",
+    "RestrictionZoneCheck uses DiscSegmentCollision",
+    "RestrictionZoneCheck uses RodSegmentCollision",
+    "RestrictionZoneCheck validates AcceptedGroundStructureMembers"
+  ]
+}

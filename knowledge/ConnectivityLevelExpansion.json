@@ -1,0 +1,50 @@
+{
+  "block": "ConnectivityLevelExpansion",
+  "status": "candidate",
+  "source_evidence": "Eq. (5)-(6): A_2 = A_1 A_1 = [A_1^2]; [A_n]_{p,q} = 0 if [A_1^n]_{p,q}=0 or p=q, 1 if [A_1^n]_{p,q}>0 and p!=q. New bars for level n: G_n = A_n - A_{n-1}, with G_1 = A_1.",
+  "purpose": "Generates higher connectivity-level nodal adjacency by matrix powering of the level-1 connectivity, then isolates the new candidate bars introduced at each level to control ground structure redundancy.",
+  "computes": [
+    "LevelNConnectivityMatrix",
+    "NewCandidateBarsPerLevel",
+    "GroundStructureRedundancy"
+  ],
+  "requires": [
+    "Level1ConnectivityMatrix",
+    "ConnectivityLevel"
+  ],
+  "assumptions": [
+    "Level n connectivity reaches neighbors-of-neighbors up to n hops",
+    "Off-diagonal positive entries of A_1^n are collapsed to boolean true",
+    "Diagonal forced to zero",
+    "Process decelerates only when member generation reaches full connectivity",
+    "High connectivity levels are not recommended (long members poorly approximate curved optimal members)"
+  ],
+  "formula_or_algorithm": "Compute A_1^n by repeated matrix multiplication. Booleanize: [A_n]_{p,q} = 1 if [A_1^n]_{p,q} > 0 and p != q else 0. New bars at level n: G_n = A_n - A_{n-1} (G_1 = A_1). Non-zero entries of G_n are candidate bars for that level; they still must pass collinearity and restriction-zone checks. Only bars with p < q are reported to avoid duplicates.",
+  "validation_opportunities": [
+    "unit test comparing level-1/2/3 bar counts on the 2-element mesh (Fig. 2)",
+    "symmetry check",
+    "monotonic growth of N_b with level (Tables 2-8)",
+    "comparison with 2D GRAND"
+  ],
+  "possible_implementations": [
+    "MATLAB (sparse boolean matrix powers)",
+    "Python (scipy.sparse)",
+    "C++",
+    "other"
+  ],
+  "reuse_risk": {
+    "level": "medium",
+    "explanation": "Concept is clear but matrix powers scale rapidly in 3D and can exhaust memory; booleanization and the G_n differencing must be applied carefully to avoid duplicate or spurious bars."
+  },
+  "missing_information": [
+    "Memory management for dense powers at high levels",
+    "Exact deduplication and p<q reporting logic in code"
+  ],
+  "candidate_relations": [
+    "ConnectivityLevelExpansion computes NewCandidateBarsPerLevel",
+    "ConnectivityLevelExpansion requires Level1ConnectivityMatrix",
+    "ConnectivityLevelExpansion requires ConnectivityLevel",
+    "NodalConnectivityMatrix computes Level1ConnectivityMatrix",
+    "CollinearityCheck validates NewCandidateBarsPerLevel"
+  ]
+}

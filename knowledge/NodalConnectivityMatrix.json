@@ -1,0 +1,47 @@
+{
+  "block": "NodalConnectivityMatrix",
+  "status": "candidate",
+  "source_evidence": "Eq. (4): [A_1]_{p,q} = 1/true if nodes p,q share an element, 0/false otherwise or if p=q, resulting in a symmetric A_1 (bi-directional). 'Two nodes are neighbors and share level 1 connectivity if they belong to the same element in the base mesh.'",
+  "purpose": "Builds the level-1 nodal connectivity (adjacency) matrix from the base mesh element connectivities, defining which node pairs are direct neighbors for ground structure member generation.",
+  "computes": [
+    "Level1ConnectivityMatrix",
+    "NodeNeighborRelations"
+  ],
+  "requires": [
+    "BaseMeshElementConnectivity",
+    "NodeCount"
+  ],
+  "assumptions": [
+    "Only nodal connectivity is used; no edge, facet, or volume information is needed",
+    "All nodes within an element are connected regardless (elements must be convex polytopes)",
+    "Diagonal entries are zero (no self connectivity)",
+    "Matrix is symmetric (undirected/bi-directional)"
+  ],
+  "formula_or_algorithm": "[A_1]_{p,q} = 1 if nodes p and q belong to a common base-mesh element and p != q; 0 otherwise. Iterate over all elements; for every pair of nodes in an element set the corresponding symmetric entries to true.",
+  "validation_opportunities": [
+    "unit test on a single hexahedron/wedge mesh (Fig. 2)",
+    "symmetry check (A_1 = A_1^T)",
+    "zero-diagonal check",
+    "comparison with reference GRAND implementation"
+  ],
+  "possible_implementations": [
+    "MATLAB (sparse logical matrix)",
+    "Python (scipy.sparse)",
+    "C++",
+    "other"
+  ],
+  "reuse_risk": {
+    "level": "low",
+    "explanation": "Simple, standard adjacency-matrix construction from element connectivity; sparse and well-defined."
+  },
+  "missing_information": [
+    "Storage format (dense vs sparse) chosen in implementation",
+    "Node/element indexing conventions"
+  ],
+  "candidate_relations": [
+    "NodalConnectivityMatrix computes Level1ConnectivityMatrix",
+    "NodalConnectivityMatrix requires BaseMeshElementConnectivity",
+    "NodalConnectivityMatrix assumes ConvexPolytopeElements",
+    "ConnectivityLevelExpansion requires Level1ConnectivityMatrix"
+  ]
+}

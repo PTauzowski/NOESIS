@@ -1,0 +1,43 @@
+{
+  "block": "ConstantLatitudePhiF",
+  "status": "candidate",
+  "source_evidence": "Section 4.4, Eq. (14): phi_F = (pi/2)(N_phi - 2)/N_phi, for a domain discretized with constant spacing on phi. 'Making phi_F constant ensures that the refinement is approximating the same boundary value problem, and thus a smooth convergence to the analytical closed-form solution.'",
+  "purpose": "Computes the latitude of the applied moment ring when a spherical/orthogonal domain is discretized with constant angular spacing in phi; used to control whether refinement approximates the same boundary value problem.",
+  "computes": [
+    "MomentApplicationLatitude"
+  ],
+  "requires": [
+    "PhiElementCount"
+  ],
+  "assumptions": [
+    "Domain discretized with constant spacing on the phi angle",
+    "If phi_F varies with discretization, each mesh approximates a different problem and convergence is not guaranteed",
+    "Fixing the first and last phi elements (and evenly distributing the rest) makes phi_F constant across discretizations",
+    "The optimal volume V_opt increases with phi_F (Eq. 12), so growing phi_F under refinement causes divergence"
+  ],
+  "formula_or_algorithm": "For constant spacing in phi: phi_F = (pi/2) * (N_phi - 2) / N_phi. To hold phi_F constant instead, fix the size of the first and last phi elements and evenly distribute the remaining elements.",
+  "validation_opportunities": [
+    "analytical / geometric derivation",
+    "convergence test: constant phi_F converges to V_opt while increasing phi_F diverges (Fig. 15, Tables 6-7)",
+    "limit check as N_phi grows (phi_F -> pi/2)"
+  ],
+  "possible_implementations": [
+    "MATLAB",
+    "Python",
+    "C++",
+    "Fortran",
+    "other"
+  ],
+  "reuse_risk": {
+    "level": "low",
+    "explanation": "Simple angular relation; the important insight is procedural (hold phi_F fixed to preserve the boundary value problem), not computationally complex."
+  },
+  "missing_information": [
+    "Exact scheme for fixing first/last elements to hold phi_F constant"
+  ],
+  "candidate_relations": [
+    "ConstantLatitudePhiF computes MomentApplicationLatitude",
+    "ConstantLatitudePhiF requires PhiElementCount",
+    "ConstantLatitudePhiF supports TorsionBallOptimalVolume"
+  ]
+}

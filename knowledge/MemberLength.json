@@ -1,0 +1,43 @@
+{
+  "block": "MemberLength",
+  "status": "candidate",
+  "source_evidence": "Eq. (7): L_{p,q} = sqrt((x_q - x_p)^2 + (y_q - y_p)^2 + (z_q - z_p)^2). 'The length of a member spanning between nodes p and q with coordinates {x_p,y_p,z_p} and {x_q,y_q,z_q}.'",
+  "purpose": "Computes the Euclidean length of a truss member between two nodes in 3D; used both in ground structure generation and in the optimization formulation.",
+  "computes": [
+    "MemberLength"
+  ],
+  "requires": [
+    "NodeCoordinatesP",
+    "NodeCoordinatesQ"
+  ],
+  "assumptions": [
+    "Straight (chord) member between the two nodes",
+    "Cartesian coordinate system"
+  ],
+  "formula_or_algorithm": "L_{p,q} = sqrt((x_q - x_p)^2 + (y_q - y_p)^2 + (z_q - z_p)^2).",
+  "validation_opportunities": [
+    "analytical solution (known point pairs)",
+    "unit test",
+    "dimensional check (length units)",
+    "symmetry check L_{p,q} = L_{q,p}"
+  ],
+  "possible_implementations": [
+    "MATLAB (vectorized norm)",
+    "Python (numpy.linalg.norm)",
+    "C++",
+    "Fortran",
+    "other"
+  ],
+  "reuse_risk": {
+    "level": "low",
+    "explanation": "Elementary, unambiguous Euclidean distance; trivially reusable."
+  },
+  "missing_information": [],
+  "candidate_relations": [
+    "MemberLength computes MemberLength",
+    "MemberLength requires NodeCoordinatesP",
+    "MemberLength requires NodeCoordinatesQ",
+    "DirectionalCosines requires MemberLength",
+    "PlasticGroundStructureOptimization requires MemberLength"
+  ]
+}

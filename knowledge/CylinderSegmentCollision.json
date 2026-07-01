@@ -1,0 +1,51 @@
+{
+  "block": "CylinderSegmentCollision",
+  "status": "candidate",
+  "source_evidence": "Appendix B.6, Eq. (31)-(36): infinite cylinder axis n = B - A, radius r; quadratic 0 = a t_w^2 + b t_w + c with a = (n.n)(d.d) - (d.n)^2, b/2 = (n.n)(v.d) - (d.n)(v.n), c = (n.n)[(v.v) - r^2] - (v.n)^2; t_w = (-b/2 +- sqrt((b/2)^2 - ac))/a. Also 'segment completely contained' test Eq (36).",
+  "purpose": "Tests whether a truss member (segment) intersects an infinite cylinder restriction primitive, either by crossing its surface (quadratic roots) or by being fully contained within it.",
+  "computes": [
+    "CylinderSegmentIntersectionFlag",
+    "SurfaceIntersectionParameters"
+  ],
+  "requires": [
+    "CylinderAxisPointA",
+    "CylinderAxisPointB",
+    "CylinderRadius",
+    "SegmentEndpointP",
+    "SegmentEndpointQ"
+  ],
+  "assumptions": [
+    "Cylinder is of infinite length with axis n = B - A",
+    "Segment parameterized as X = P + td, 0 <= t <= 1; here v = P - A",
+    "Collision if segment crosses the surface OR is completely contained within the cylinder",
+    "Cylinder developed specifically for GRAND3"
+  ],
+  "formula_or_algorithm": "d = Q - P, v = P - A, n = B - A. Solve quadratic a t_w^2 + b t_w + c = 0 with a = (n.n)(d.d) - (d.n)^2, b/2 = (n.n)(v.d) - (d.n)(v.n), c = (n.n)[(v.v) - r^2] - (v.n)^2. Roots t_w = (-b/2 +- sqrt((b/2)^2 - a c))/a. If discriminant < 0 the line misses the cylinder. If positive, a surface hit requires 0 <= t_w <= 1 for a root (points W, W'). Additionally the segment is fully contained if the distance from the axis to P satisfies (v - (v.n/n.n)n).(v - (v.n/n.n)n) <= r^2 (Eq. 36).",
+  "validation_opportunities": [
+    "unit tests: chord piercing surface, tangent, fully inside, fully outside, parallel to axis",
+    "discriminant sign check",
+    "distance-to-axis verification",
+    "degenerate a = 0 (segment parallel to axis) handling"
+  ],
+  "possible_implementations": [
+    "MATLAB",
+    "C++",
+    "Python",
+    "other"
+  ],
+  "reuse_risk": {
+    "level": "medium",
+    "explanation": "Quadratic formulation is standard but numerically delicate: a=0 (parallel to axis) and near-tangent cases need special handling; contained-segment test must be combined with surface test."
+  },
+  "missing_information": [
+    "Handling when a = 0 (segment parallel to axis)",
+    "Combination logic between surface-hit and contained tests in code"
+  ],
+  "candidate_relations": [
+    "CylinderSegmentCollision computes CylinderSegmentIntersectionFlag",
+    "CylinderSegmentCollision requires CylinderAxisPointA",
+    "CylinderSegmentCollision requires CylinderRadius",
+    "RodSegmentCollision uses CylinderSegmentCollision",
+    "RestrictionZoneCheck uses CylinderSegmentCollision"
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "block": "RodSegmentCollision",
+  "status": "candidate",
+  "source_evidence": "Appendix B.7, Eq. (37)-(41): rod = finite cylinder with endcaps. 'The segment collides with the rod if any of the following 4 situations occur: collides with finite cylinder's surface; collides with endcap A (disc); collides with endcap B (disc); or is fully contained within the rod.' Surface check adds 0 <= w.n <= n.n and 0 <= (v+t_w d).n <= n.n (Eq. 37).",
+  "purpose": "Tests whether a truss member (segment) intersects a finite cylinder (rod) restriction primitive, combining the infinite-cylinder surface test bounded by endcaps, two disc endcap tests, and a containment test.",
+  "computes": [
+    "RodSegmentIntersectionFlag"
+  ],
+  "requires": [
+    "RodAxisPointA",
+    "RodAxisPointB",
+    "RodRadius",
+    "SegmentEndpointP",
+    "SegmentEndpointQ"
+  ],
+  "assumptions": [
+    "Rod is a finite cylinder with endcaps A and B",
+    "Combination of the infinite cylinder and disc primitives with minor modifications",
+    "Collision if any of 4 situations occur (finite surface, endcap A, endcap B, fully contained)",
+    "For containment, P must be inside the rod, requiring 0 <= v.n/n.n <= 1 to verify P is between the endcaps",
+    "Rod developed specifically for GRAND3"
+  ],
+  "formula_or_algorithm": "1) Finite-cylinder surface: use the infinite-cylinder quadratic (Eq. 34-35); a root t_w in [0,1] counts only if its intersection point lies between endcaps: 0 <= w.n <= n.n and 0 <= (v + t_w d).n <= n.n. 2) Endcap A: disc test (Eq. 30). 3) Endcap B: analogous disc test (Eq. 38) with (v + (n.n - v.n)/(d.n) n)-based expression and 0 <= t_w = (n.n - v.n)/(d.n) <= 1. 4) Containment: distance from P to axis <= r (Eq. 40) plus 0 <= v.n/n.n <= 1 (Eq. 41). Collision if any of the four holds.",
+  "validation_opportunities": [
+    "unit tests for each of the four collision situations independently",
+    "segment entering through the curved wall vs through an endcap",
+    "fully-contained short segment",
+    "benchmark on cup/spider problem (rod restriction primitive)"
+  ],
+  "possible_implementations": [
+    "MATLAB",
+    "C++",
+    "Python",
+    "other"
+  ],
+  "reuse_risk": {
+    "level": "medium",
+    "explanation": "Composite of several primitives; correctness depends on properly bounding the infinite-cylinder roots to the endcaps and combining four sub-tests without gaps or double counting."
+  },
+  "missing_information": [
+    "Precise code-level combination of the four sub-tests",
+    "Degenerate cases shared with cylinder/disc primitives"
+  ],
+  "candidate_relations": [
+    "RodSegmentCollision computes RodSegmentIntersectionFlag",
+    "RodSegmentCollision uses CylinderSegmentCollision",
+    "RodSegmentCollision uses DiscSegmentCollision",
+    "RodSegmentCollision requires RodAxisPointA",
+    "RodSegmentCollision requires RodRadius",
+    "RestrictionZoneCheck uses RodSegmentCollision"
+  ]
+}

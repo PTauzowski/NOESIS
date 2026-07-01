@@ -1,0 +1,59 @@
+{
+  "block": "LinearProgrammingTrussOptimization",
+  "status": "candidate",
+  "source_evidence": "Eq. (2)-(3): min over s+,s- of V = l^T (s+/sigma_T + s-/sigma_C) s.t. B^T(s+ - s-) = f, s+_i,s-_i >= 0; with a_i = s+_i/sigma_T + s-_i/sigma_C and n_i = s+_i - s-_i. Rewritten with kappa = sigma_T/sigma_C as V* = V/sigma_T = {l^T kappa l^T}{s+;s-}.",
+  "purpose": "Reformulates the plastic minimum-volume truss problem as a linear program by introducing non-negative tension/compression slack variables, enabling efficient solution via interior-point methods.",
+  "computes": [
+    "OptimalTensionSlackVariables",
+    "OptimalCompressionSlackVariables",
+    "MemberInternalForces",
+    "OptimalMemberAreas",
+    "OptimalVolume"
+  ],
+  "requires": [
+    "MemberLengthVector",
+    "NodalEquilibriumMatrix",
+    "NodalLoadVector",
+    "StressLimitRatio",
+    "TensionStressLimit",
+    "CompressionStressLimit"
+  ],
+  "assumptions": [
+    "Member is in tension if s+ > 0, compression if s- > 0",
+    "Stress constraint must be active for every member at the optimum",
+    "If truss is stable with no repeated/overlapping members, rank of B^T is N_dof so solution lies on a corner of the feasible domain",
+    "At most N_dof non-zero basic variables at optimum; remainder absent",
+    "Optimal volume computed for sigma_T = 1 and scaled by 1/sigma_T otherwise",
+    "Number of design variables doubled relative to the nonlinear form"
+  ],
+  "formula_or_algorithm": "Define slack variables s+ (tension) and s- (compression). Objective: min l^T(s+/sigma_T + s-/sigma_C). Constraint: [B^T  -B^T]{s+; s-} = f with s+,s- >= 0. Recover a_i = s+_i/sigma_T + s-_i/sigma_C and n_i = s+_i - s-_i. Using kappa = sigma_T/sigma_C gives V* = V/sigma_T. Solve as a linear program (interior-point / Karmarkar). Degenerate solutions lie on a facet/edge and are harder to solve.",
+  "validation_opportunities": [
+    "benchmark against nonlinear formulation (1) giving same optimum",
+    "analytical closed-form optimal volumes",
+    "corner-solution check (at most N_dof non-zero basic variables)",
+    "convergence test with mesh refinement"
+  ],
+  "possible_implementations": [
+    "MATLAB (linprog / interior-point)",
+    "Python (scipy.optimize.linprog, cvxpy)",
+    "C++ (LP solver libraries)",
+    "other"
+  ],
+  "reuse_risk": {
+    "level": "low",
+    "explanation": "Standard, well-posed linear program with an explicit reformulation and recovery mapping; solvable with off-the-shelf LP solvers."
+  },
+  "missing_information": [
+    "Explicit construction of the doubled constraint matrix in code",
+    "Solver tolerance and degeneracy handling",
+    "Cutoff threshold used to prune small-area members"
+  ],
+  "candidate_relations": [
+    "LinearProgrammingTrussOptimization reformulates PlasticGroundStructureOptimization",
+    "LinearProgrammingTrussOptimization computes OptimalMemberAreas",
+    "LinearProgrammingTrussOptimization computes OptimalVolume",
+    "LinearProgrammingTrussOptimization requires StressLimitRatio",
+    "LinearProgrammingTrussOptimization requires NodalEquilibriumMatrix",
+    "LinearProgrammingTrussOptimization assumes ActiveStressConstraints"
+  ]
+}

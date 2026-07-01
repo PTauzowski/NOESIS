@@ -1,0 +1,50 @@
+{
+  "block": "CollinearityCheck",
+  "status": "candidate",
+  "source_evidence": "Eq. (9): accept bar pq if d_hat_{p,q} . d_hat_{p,i} < ColTol for all i, else reject. 'The user-defined ColTol <= 1 controls the admissible collinearity... the minimum angle between generated bars is alpha >= acos(ColTol).' Footnote: dot product of directional cosines equals cosine of the angle between them.",
+  "purpose": "Rejects newly generated candidate bars that are (nearly) collinear/overlapping with members already in the ground structure, preventing redundant duplicate members.",
+  "computes": [
+    "BarAcceptanceFlag",
+    "MinimumAdmissibleAngle"
+  ],
+  "requires": [
+    "CandidateBarDirectionalCosines",
+    "ExistingBarDirectionalCosines",
+    "CollinearityTolerance"
+  ],
+  "assumptions": [
+    "New bars added at level n are deleted if collinear with bars from previous levels",
+    "New bars at level n are assumed not collinear between themselves (checked only against previously generated bars)",
+    "New bars are longer than lower-level bars, so the newer bar is eliminated",
+    "Directional cosine vectors have unit norm so their dot product is the cosine of the angle between them"
+  ],
+  "formula_or_algorithm": "For candidate bar pq with direction d_hat_{p,q}, compute dot product with every relevant existing bar direction d_hat_{p,i}. Accept pq if d_hat_{p,q} . d_hat_{p,i} < ColTol for all i; otherwise reject. The minimum admissible angle is alpha = acos(ColTol), with ColTol <= 1 (e.g. 0.999999).",
+  "validation_opportunities": [
+    "unit test with deliberately collinear bars",
+    "angle threshold verification (acos(ColTol))",
+    "comparison with 2D GRAND collinearity examples",
+    "symmetry check"
+  ],
+  "possible_implementations": [
+    "MATLAB",
+    "Python (numpy)",
+    "C++",
+    "other"
+  ],
+  "reuse_risk": {
+    "level": "medium",
+    "explanation": "Clear rule, but the 'check against previously generated only' assumption can be violated for non-strictly-convex base meshes or curling/spiraling expansions, and the tolerance choice affects results."
+  },
+  "missing_information": [
+    "Exact set of 'previously generated' bars compared against (indexing/order)",
+    "Handling of curling/spiraling degenerate cases",
+    "Default ColTol beyond stated 0.999999"
+  ],
+  "candidate_relations": [
+    "CollinearityCheck computes BarAcceptanceFlag",
+    "CollinearityCheck requires CandidateBarDirectionalCosines",
+    "CollinearityCheck requires CollinearityTolerance",
+    "CollinearityCheck validates NewCandidateBarsPerLevel",
+    "DirectionalCosines computes CandidateBarDirectionalCosines"
+  ]
+}

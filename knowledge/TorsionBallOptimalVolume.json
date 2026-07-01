@@ -1,0 +1,52 @@
+{
+  "block": "TorsionBallOptimalVolume",
+  "status": "candidate",
+  "source_evidence": "Section 4.3, Eq. (12): V_opt = 2M log(tan(pi/4 + phi_F/2)) [1/sigma_T + 1/sigma_C], where phi_F is the latitude of the small rings where the moment is applied. 'The optimal volume is independent of the sphere's radius R.' Obtained by Michell (1904), re-derived by Hemp (1973), Lewinski (2004).",
+  "purpose": "Provides the analytical closed-form optimal volume of the ball (Michell sphere) structure transferring a moment pair applied on rings at latitude phi_F, used to verify GRAND3 numerical results.",
+  "computes": [
+    "OptimalVolume"
+  ],
+  "requires": [
+    "AppliedMoment",
+    "MomentApplicationLatitude",
+    "TensionStressLimit",
+    "CompressionStressLimit"
+  ],
+  "assumptions": [
+    "Optimal structure to transmit a torsion pair is a ball (curved mutually-orthogonal members on its surface)",
+    "Optimal volume is independent of the sphere radius R, but the domain must be large enough to allow the sphere of radius R to develop",
+    "phi_F is the latitude of the small rings where the moment is applied",
+    "As phi_F -> pi/2 the optimal volume tends to infinity",
+    "Michell's formula matches later work provided the quantity L in Michell (1904) is taken as M*r"
+  ],
+  "formula_or_algorithm": "V_opt = 2 M log(tan(pi/4 + phi_F/2)) [1/sigma_T + 1/sigma_C]. For a constant-latitude discretization with pi/2 - phi_F = pi/10 and M=7, V_opt = 51.5964.",
+  "validation_opportunities": [
+    "analytical solution (reference closed form; Michell 1904)",
+    "benchmark: GRAND3 spherical-domain result converges to V_opt = 51.5964 (Table 7, Fig. 15)",
+    "singularity check as phi_F -> pi/2 (V_opt -> infinity)",
+    "convergence test with constant vs increasing phi_F"
+  ],
+  "possible_implementations": [
+    "MATLAB",
+    "Python",
+    "C++",
+    "Fortran",
+    "other"
+  ],
+  "reuse_risk": {
+    "level": "medium",
+    "explanation": "Formula is simple, but results depend critically on how phi_F is held constant under refinement; an increasing phi_F changes the boundary value problem and diverges as phi_F -> pi/2."
+  },
+  "missing_information": [
+    "Ambiguity in Michell's original quantity L (whether L = M*r)",
+    "Discretization strategy needed to hold phi_F constant"
+  ],
+  "candidate_relations": [
+    "TorsionBallOptimalVolume computes OptimalVolume",
+    "TorsionBallOptimalVolume requires AppliedMoment",
+    "TorsionBallOptimalVolume requires MomentApplicationLatitude",
+    "TorsionBallOptimalVolume assumes MichellSphereSolution",
+    "TorsionBallOptimalVolume validates LinearProgrammingTrussOptimization",
+    "ConstantLatitudePhiF computes MomentApplicationLatitude"
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "block": "OrthogonalCubeTorsionGeometry",
+  "status": "candidate",
+  "source_evidence": "Section 4.3, Eq. (13): dx = L/N; r_F = (1/2)sqrt(2 dx^2) = sqrt(2)L/(2N); phi_F = atan((L/2)/r_F) = atan(sqrt(2)N/2); R = sqrt((L/2)^2 + r_F^2) = (L/2N)sqrt(N^2+2). 'where dx is the dimension of a single hexahedral element, r_F is the distance from the pole to the loaded nodes, and R is the radius of the (optimal) sphere.'",
+  "purpose": "Computes the geometric quantities (element size, load-ring radius, moment latitude, optimal sphere radius) for approximating the torsion ball with a regular orthogonal cube mesh of N elements per side, explaining why phi_F changes with discretization.",
+  "computes": [
+    "ElementSize",
+    "LoadRingRadius",
+    "MomentApplicationLatitude",
+    "OptimalSphereRadius"
+  ],
+  "requires": [
+    "DomainSideLength",
+    "ElementsPerSide"
+  ],
+  "assumptions": [
+    "Regular structured-orthogonal cube mesh of dimension L discretized with N hexahedral elements in each direction",
+    "Loads and supports applied at the four nodes closest to the poles",
+    "Load ring radius r_F is the diagonal half-distance of one element from the pole",
+    "As N increases, phi_F increases (load ring shrinks), making the problem harder to approximate",
+    "R (13) exceeds the domain boundaries when 2R > L, so a cube cannot fully accommodate the optimal sphere"
+  ],
+  "formula_or_algorithm": "dx = L/N; r_F = (1/2) sqrt(2 dx^2) = sqrt(2) L / (2 N); phi_F = atan((L/2)/r_F) = atan(sqrt(2) N / 2); R = sqrt((L/2)^2 + r_F^2) = (L/(2N)) sqrt(N^2 + 2).",
+  "validation_opportunities": [
+    "analytical solution / geometric derivation",
+    "cross-check against tabulated R and phi_F values (Table 4)",
+    "limit check (as N grows, phi_F -> pi/2)",
+    "dimensional check"
+  ],
+  "possible_implementations": [
+    "MATLAB",
+    "Python",
+    "C++",
+    "Fortran",
+    "other"
+  ],
+  "reuse_risk": {
+    "level": "low",
+    "explanation": "Elementary trigonometric/geometric relations specific to the orthogonal-cube discretization of the ball problem; easily reproduced."
+  },
+  "missing_information": [],
+  "candidate_relations": [
+    "OrthogonalCubeTorsionGeometry computes MomentApplicationLatitude",
+    "OrthogonalCubeTorsionGeometry computes OptimalSphereRadius",
+    "OrthogonalCubeTorsionGeometry requires DomainSideLength",
+    "OrthogonalCubeTorsionGeometry requires ElementsPerSide",
+    "OrthogonalCubeTorsionGeometry supports TorsionBallOptimalVolume"
+  ]
+}

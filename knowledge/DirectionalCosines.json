@@ -1,0 +1,47 @@
+{
+  "block": "DirectionalCosines",
+  "status": "candidate",
+  "source_evidence": "Eq. (8): d_hat_{p,q} = {x_q - x_p, y_q - y_p, z_q - z_p} / L_{p,q}. 'The directional cosines vector for the bar between nodes p and q.'",
+  "purpose": "Computes the unit directional-cosines vector of a member, used to build the nodal equilibrium matrix B^T and to perform the collinearity check.",
+  "computes": [
+    "MemberDirectionalCosines"
+  ],
+  "requires": [
+    "NodeCoordinatesP",
+    "NodeCoordinatesQ",
+    "MemberLength"
+  ],
+  "assumptions": [
+    "Member length is non-zero",
+    "Resulting vector has unit norm by definition",
+    "Straight member between the two nodes"
+  ],
+  "formula_or_algorithm": "d_hat_{p,q} = (1/L_{p,q}) * {x_q - x_p, y_q - y_p, z_q - z_p}, where L_{p,q} is the member length (Eq. 7).",
+  "validation_opportunities": [
+    "unit-norm check (||d_hat|| = 1)",
+    "unit test on known geometries",
+    "analytical solution",
+    "sign/orientation consistency check"
+  ],
+  "possible_implementations": [
+    "MATLAB",
+    "Python (numpy)",
+    "C++",
+    "Fortran",
+    "other"
+  ],
+  "reuse_risk": {
+    "level": "low",
+    "explanation": "Standard normalized direction vector; only caveat is division by zero for coincident nodes."
+  },
+  "missing_information": [
+    "Guard against zero-length (coincident) nodes in code"
+  ],
+  "candidate_relations": [
+    "DirectionalCosines computes MemberDirectionalCosines",
+    "DirectionalCosines requires MemberLength",
+    "DirectionalCosines requires NodeCoordinatesP",
+    "CollinearityCheck requires MemberDirectionalCosines",
+    "PlasticGroundStructureOptimization requires MemberDirectionalCosines"
+  ]
+}

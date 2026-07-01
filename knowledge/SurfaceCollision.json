@@ -1,0 +1,50 @@
+{
+  "block": "SurfaceCollision",
+  "status": "candidate",
+  "source_evidence": "Appendix B.8: 'The surface primitive builds from the base of the triangle and quadrangle primitives. The surface primitive can handle any surface provided that it is tessellated and the points in each facet lie (approximately) in the same plane.' Inputs: RNODE (N_rn x 3) and RFACE (cell, N_rf x 1) facet connectivity. Facets with >4 nodes are subdivided into triangles.",
+  "purpose": "Tests whether a truss member (segment) intersects an arbitrary tessellated surface restriction primitive, by evaluating the segment against each facet (triangle/quadrangle) of the surface mesh.",
+  "computes": [
+    "SurfaceSegmentIntersectionFlag"
+  ],
+  "requires": [
+    "SurfaceNodeCoordinates",
+    "SurfaceFacetConnectivity",
+    "SegmentEndpointP",
+    "SegmentEndpointQ"
+  ],
+  "assumptions": [
+    "Surface is tessellated (discretized) into facets",
+    "The points in each facet lie approximately in the same plane",
+    "All facets are convex in their own plane",
+    "Facets with more than 4 nodes (flat polygons) are subdivided into triangles and evaluated sequentially",
+    "Allows translating a complicated restriction volume into testing collision on its surface"
+  ],
+  "formula_or_algorithm": "Inputs: RNODE (N_rn x 3 node coordinates) and RFACE (N_rf x 1 cell of facet node lists). For each facet, run the triangle test (Appendix B.2) or quadrangle test (Appendix B.3); polygons with >4 nodes are split into triangles evaluated in sequence. The segment collides with the surface if it intersects any facet.",
+  "validation_opportunities": [
+    "unit tests against single- and multi-facet surfaces",
+    "consistency with the underlying triangle/quadrangle tests",
+    "watertightness/edge-shared facet checks",
+    "benchmark on Lotte tower problem (surface set-back restriction)"
+  ],
+  "possible_implementations": [
+    "MATLAB (cell-array facets)",
+    "C++",
+    "Python",
+    "other"
+  ],
+  "reuse_risk": {
+    "level": "medium",
+    "explanation": "General and powerful, but cost scales with facet count and correctness depends on the per-facet planarity/convexity assumptions and consistent tessellation."
+  },
+  "missing_information": [
+    "Acceleration structure for many facets (spatial indexing)",
+    "Behavior for non-planar or non-convex facets"
+  ],
+  "candidate_relations": [
+    "SurfaceCollision computes SurfaceSegmentIntersectionFlag",
+    "SurfaceCollision uses TriangleSegmentCollision",
+    "SurfaceCollision uses QuadrangleSegmentCollision",
+    "SurfaceCollision requires SurfaceFacetConnectivity",
+    "RestrictionZoneCheck uses SurfaceCollision"
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "block": "TorsionConeOptimalVolume",
+  "status": "candidate",
+  "source_evidence": "Section 4.2, Eq. (11): V_opt = M sqrt(H^2 + (r_L - r_U)^2)/(r_L - r_U) log(r_L/r_U) [1/sigma_T + 1/sigma_C]. 'The analytical solution for this problem was derived by Lewinski (2004), by constraining the solution to exist in the cone's surface.'",
+  "purpose": "Provides the analytical closed-form optimal volume of a capped cone truss under an end torsion moment, used to verify GRAND3 numerical results.",
+  "computes": [
+    "OptimalVolume"
+  ],
+  "requires": [
+    "AppliedMoment",
+    "ConeHeight",
+    "LowerRadius",
+    "UpperRadius",
+    "TensionStressLimit",
+    "CompressionStressLimit"
+  ],
+  "assumptions": [
+    "Solution constrained to exist on the cone's surface (Lewinski 2004)",
+    "Capped cone with lower radius r_L and upper radius r_U (r_L > r_U)",
+    "End moment M distributed over the outer ring at the upper end cap; domain supported at the base"
+  ],
+  "formula_or_algorithm": "V_opt = M * sqrt(H^2 + (r_L - r_U)^2)/(r_L - r_U) * log(r_L/r_U) * [1/sigma_T + 1/sigma_C]. For H=10, r_L=7, r_U=2, M=3: V_opt = 16.8076.",
+  "validation_opportunities": [
+    "analytical solution (reference closed form)",
+    "benchmark: GRAND3 converges to V_opt = 16.8076 (Table 3, Fig. 8)",
+    "dimensional check",
+    "limit check r_U -> r_L should approach cylinder result",
+    "convergence test under mesh refinement"
+  ],
+  "possible_implementations": [
+    "MATLAB",
+    "Python",
+    "C++",
+    "Fortran",
+    "other"
+  ],
+  "reuse_risk": {
+    "level": "low",
+    "explanation": "Explicit algebraic formula; only care is the r_L = r_U singularity where the cone degenerates to a cylinder."
+  },
+  "missing_information": [
+    "Behavior/limit expression as r_U -> r_L (degenerate to cylinder)"
+  ],
+  "candidate_relations": [
+    "TorsionConeOptimalVolume computes OptimalVolume",
+    "TorsionConeOptimalVolume requires AppliedMoment",
+    "TorsionConeOptimalVolume requires LowerRadius",
+    "TorsionConeOptimalVolume requires UpperRadius",
+    "TorsionConeOptimalVolume validates LinearProgrammingTrussOptimization"
+  ]
+}
